@@ -5,7 +5,7 @@ Sensu plugins uses Rust.
 ## Installation ##
 
   1. git clone https://github.com/metalels/sensu-plugins-rust-snmp.git
-  2. execute metrics/metrics_snmp
+  2. execute metrics/metrics-snmp
 
 ## Dependencies of compile ##
 
@@ -16,7 +16,7 @@ Sensu plugins uses Rust.
 ## Usage ##
 
 ```
-Usage: target/debug/metrics-snmp METRIC [options]
+Usage: metrics-snmp METRIC [options]
 
 Requires:
   METRIC: <desc|ss|la|mem|dsk|if> or custom name with -O(oids)
