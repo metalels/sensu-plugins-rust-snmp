@@ -1,0 +1,13 @@
+[package]
+name    = "sensu-plugins-rust-snmp"
+version = "0.1.0"
+authors = ["metalels <metalels86@gmail.com>"]
+
+[[bin]]
+name = "metrics-snmp"
+path = "src/bin/metrics-snmp.rs"
+
+[dependencies]
+"getopts"     = "*"
+"snmp"        = "*"
+time          = "*"
