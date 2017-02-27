@@ -1,10 +1,9 @@
 extern crate snmp;
 extern crate getopts;
-extern crate time;
 
 use std::env;
 use std::io::Write;
-use std::time::Duration;
+use std::time::{SystemTime, Duration};
 use getopts::Options;
 use snmp::{SyncSession,Value};
 
@@ -94,11 +93,15 @@ fn create_targets(oids: &str) -> Result<Vec<Target>, String> {
   }
 }
 
+fn time_now_unix() -> u64 {
+  SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs()
+}
+
 fn print_value(agent_name: &str, nickname: &str, targetname:  &str, value: &str, strflg: bool) {
   if strflg {
-    println!("{}.snmp.{}.{} {:?} {:?}", agent_name, targetname, nickname, value, time::now().to_timespec().sec);
+    println!("{}.snmp.{}.{} {:?} {:?}", agent_name, targetname, nickname, value, time_now_unix());
   } else {
-    println!("{}.snmp.{}.{} {} {:?}", agent_name, targetname, nickname, value, time::now().to_timespec().sec);
+    println!("{}.snmp.{}.{} {} {:?}", agent_name, targetname, nickname, value, time_now_unix());
   }
 }
 
@@ -106,13 +109,13 @@ fn main() {
   let args: Vec<String> = env::args().collect();
   let program = args[0].clone();
   let mut opts = Options::new();
-  opts.optopt("N", "name", "set target agent name", "NAME");
-  opts.optopt("H", "host", "set target host ip address", "ADDRESS");
-  opts.optopt("P", "port", "set target host port", "PORT");
-  opts.optopt("C", "community", "set target community name", "COMMUNITY");
-  opts.optopt("O", "oids", "set target oid(s: use [,] to joins multi oids)", "OID[:OID_NAME],OID[:OID_NAME]...");
-  opts.optflag("d", "debug", "print debug logs");
-  opts.optflag("h", "help", "print this help menu");
+  opts.optopt("n", "name", "set target agent name", "NAME");
+  opts.optopt("h", "host", "set target host ip address", "ADDRESS");
+  opts.optopt("p", "port", "set target host port", "PORT");
+  opts.optopt("c", "community", "set target community name", "COMMUNITY");
+  opts.optopt("o", "oids", "set target oid(s: use [,] to joins multi oids)", "OID[:OID_NAME],OID[:OID_NAME]...");
+  opts.optflag("D", "debug", "print debug logs");
+  opts.optflag("H", "help", "print this help menu");
 
   let matches = match opts.parse(&args[1..]) {
     Ok(m) => { m }
@@ -122,7 +125,7 @@ fn main() {
     }
   };
 
-  if matches.opt_present("h") {
+  if matches.opt_present("H") {
     print_usage(&program, opts);
     return;
   };
@@ -134,14 +137,14 @@ fn main() {
 
   let mut debug = false;
 
-  if matches.opt_present("d") {
+  if matches.opt_present("D") {
     debug = true;
   };
 
   let nickname = matches.free[0].clone();
   let targets;
-  if matches.opt_present("O") {
-    targets = match create_targets(&matches.opt_str("O").unwrap()) {
+  if matches.opt_present("o") {
+    targets = match create_targets(&matches.opt_str("o").unwrap()) {
       Ok(m) => { m }
       Err(f) => {
         let _ = writeln!(&mut std::io::stderr(), "{}", f);
@@ -162,15 +165,15 @@ fn main() {
     println!("target: {}", nickname);
   };
 
-  let agent_host = match matches.opt_str("H") {
+  let agent_host = match matches.opt_str("h") {
     Some(m) => { m }
     None => { "127.0.0.1".to_string() }
   };
-  let agent_port = match matches.opt_str("P") {
+  let agent_port = match matches.opt_str("p") {
     Some(m) => { m }
     None => { "161".to_string() }
   };
-  let agent_name = match matches.opt_str("N") {
+  let agent_name = match matches.opt_str("n") {
     Some(m) => { m }
     None => { agent_host.clone() }
   };
@@ -183,7 +186,7 @@ fn main() {
   if debug {
     println!("agent_addr: {:?}", agent_addr);
   };
-  let community_name = match matches.opt_str("C") {
+  let community_name = match matches.opt_str("c") {
     Some(m) => { m }
     None => { "public".to_string() }
   };
@@ -203,7 +206,6 @@ fn main() {
     let vecs: Vec<&str> = target.oid.split('.').collect();
     let vecu: Vec<u32> = vecs.iter().map(|x| x.parse::<u32>().unwrap()).collect();
     if debug {
-      //println!("target_oid: {}", target.oid);
       println!("target oid vec: {:?}: {:?}", target.name, vecu);
     }
     let mut response;

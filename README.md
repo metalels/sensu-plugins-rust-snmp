@@ -19,16 +19,18 @@ Sensu plugins uses Rust.
 Usage: metrics-snmp METRIC [options]
 
 Requires:
-  METRIC: <desc|ss|la|mem|dsk|if> or custom name with -O(oids)
+    METRIC: <desc|ss|la|mem|dsk|if> or custom name with -O(oids)
 
 Options:
-  -N, --name NAME                     set target agent name
-  -H, --host ADDRESS                  set target host ip address
-  -P, --port PORT                     set target host port
-  -C, --community COMMUNITY           set target community name
-  -O, --oids OID[:OID_NAME],OID...    set target oid(s: use [,] to joins multi oids)
-  -d, --debug                         print debug logs
-  -h, --help                          print help menu
+    -n, --name NAME     set target agent name
+    -h, --host ADDRESS  set target host ip address
+    -p, --port PORT     set target host port
+    -c, --community COMMUNITY
+                        set target community name
+    -o, --oids OID[:OID_NAME],OID[:OID_NAME]...
+                        set target oid(s: use [,] to joins multi oids)
+    -D, --debug         print debug logs
+    -H, --help          print this help menu
 ```
 
 ## Authors ##
