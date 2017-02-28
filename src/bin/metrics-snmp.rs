@@ -24,7 +24,7 @@ impl Target {
 }
 
 fn print_usage(program: &str, opts: Options) {
-  let brief = format!("Usage: {} METRIC [options]\n\nRequires:\n    METRIC: <desc|ss|la|mem|dsk|if> or custom name with -O(oids)", program);
+  let brief = format!("Usage: {} METRIC [options]\n\nRequires:\n    METRIC: <desc|ss|la|mem|dsk|if> or custom name with -o(oids)", program);
   print!("{}", opts.usage(&brief));
 }
 

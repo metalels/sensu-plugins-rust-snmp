@@ -1,6 +1,6 @@
 [package]
 name    = "sensu-plugins-rust-snmp"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["metalels <metalels86@gmail.com>"]
 
 [[bin]]
